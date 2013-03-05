@@ -18,12 +18,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "../tuneup_js/tuneup.js"
+
 "use strict";
 
 var UIAutoMonkey = {
 
 	config: {
-		numberOfEvents: 1000,
+		maxDuration: 120,    // In seconds
 		delayBetweenEvents: 0.05,    // In seconds
 
 		// Events are triggered based on the relative weights here. The event
@@ -151,12 +153,15 @@ var UIAutoMonkey = {
 	// Helper methods
 	//
 
+	// Called at the bottom of this script to, you know...
 	RELEASE_THE_MONKEY: function() {
-		// Called at the bottom of this script to, you know...
-		//
-		// RELEASE THE MONKEY!
-
-		for(var i = 0; i < this.config.numberOfEvents; i++) {
+	    // override default config if needed
+		if (typeof UIAutoMonkeyConfig !== 'undefined') {
+		    this.config = UIAutoMonkeyConfig;
+		}
+		var stopTime = (new Date).getTime() + this.config.maxDuration * 1000;
+		
+		for(var i = 0; new Date < stopTime; i++) {
 			this.triggerRandomEvent();
 			this.delay();
 		}
@@ -281,7 +286,9 @@ var UIAutoMonkey = {
 	}
 };
 
-UIAutoMonkey.RELEASE_THE_MONKEY();
+test("Release The Monkey", function(target, app) {
+    UIAutoMonkey.RELEASE_THE_MONKEY();
+});
 
 /* Instruments uses 4-wide tab stops. */
 /* vim: set tabstop=4 shiftwidth=4 softtabstop=4 copyindent noexpandtab: */
